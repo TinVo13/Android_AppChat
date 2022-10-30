@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity">
+
+    <include
+        android:id="@+id/appbarsetting"
+        layout="@layout/app_bar_layout"
+        app:layout_constraintBottom_toTopOf="@+id/circleImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </include>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbarsetting" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="295dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circleImageView">
+        <EditText
+            android:id="@+id/txtUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/resume"
+            android:drawableRight="@drawable/edit"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:drawablePadding="10dp"
+            android:hint="Tên"
+            android:textStyle="bold"
+            android:background="@drawable/bg_edittext_setting"/>
+        <EditText
+            android:id="@+id/txtStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/status"
+            android:drawableRight="@drawable/edit"
+            android:layout_below="@id/txtUserName"
+            android:padding="10dp"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="10dp"
+            android:hint="Trạng thái"
+            android:textStyle="bold"
+            android:background="@drawable/bg_edittext_setting"/>
+        <Button
+            android:id="@+id/btnCapNhat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:layout_below="@id/txtStatus"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:theme="@style/Theme.AppChat"
+    android:layout_marginTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageViewRequest"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/profile"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/nameTvRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ho ten o day"
+            android:layout_toRightOf="@id/circleImageViewRequest"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Chấp nhận"
+            android:background="@color/primary"
+            android:layout_below="@id/nameTvRequest"
+            android:layout_toRightOf="@id/circleImageViewRequest"
+            android:layout_marginLeft="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="5dp"
+            android:visibility="invisible"/>
+        <Button
+            android:id="@+id/btnDenie"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="Từ chối"
+            android:layout_toRightOf="@id/btnAccept"
+            android:layout_below="@id/nameTvRequest"
+            android:background="@color/red"
+            android:textColor="@color/white"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

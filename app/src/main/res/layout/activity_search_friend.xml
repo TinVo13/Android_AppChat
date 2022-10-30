@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Theme.AppCompat.Light.NoActionBar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchFriendActivity">
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/img_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:padding="10dp"
+            android:layout_alignParentRight="@+id/txtSearch"
+            android:background="@android:color/transparent"/>
+
+        <EditText
+            android:id="@+id/txtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:hint="Tìm kiếm bạn bè..."
+            android:padding="15dp"
+            android:textColor="@color/darker"
+            android:textColorHint="@color/darker"
+            android:background="@drawable/bg_search"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_TaoMoiGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tạo mới group"
+        android:layout_marginHorizontal="10dp"
+        android:textAlignment="textStart"
+        android:drawableLeft="@drawable/ic_baseline_person_add_24"
+        android:drawablePadding="10dp"
+        android:layout_below="@+id/linearLayout"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSearchFriend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_TaoMoiGroup"/>
+
+</RelativeLayout>

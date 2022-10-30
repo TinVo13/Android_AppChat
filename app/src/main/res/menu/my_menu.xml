@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Tìm bạn bè"
+        android:id="@+id/searchbar">
+    </item>
+    <item
+        android:title="Tạo nhóm"
+        android:id="@+id/taonhom">
+    </item>
+    <item
+        android:title="Cài đặt">
+        <menu>
+            <item android:id="@+id/setting"
+                android:title="Cập nhật hồ sơ">
+            </item>
+            <item
+                android:title="Đổi mật khẩu"
+                android:id="@+id/doimatkhau">
+            </item>
+        </menu>
+    </item>
+
+    <item
+        android:title="Lời mời kết bạn"
+        android:id="@+id/loimoi">
+    </item>
+    <item
+        android:id="@+id/logout"
+        android:title="Logout">
+    </item>
+
+</menu>
