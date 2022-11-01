@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.example.appchat.Adapter.AdapterChat;
 import com.example.appchat.Entity.Chat;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +50,7 @@ public class ChatActivity extends AppCompatActivity {
     private ValueEventListener seenListener;
     private List<Chat> chatList;
     private AdapterChat adapterChat;
-    private DatabaseReference refSeen;
+    private DatabaseReference refSeen,chatRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         readMessage();
-        seenMessage();
+        //seenMessage();
     }
 
     private void seenMessage() {
@@ -136,8 +138,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void readMessage() {
         chatList = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Chats");
+        reference.child(uid).child(yourUid).getRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatList.clear();
@@ -163,7 +165,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        chatRef = FirebaseDatabase.getInstance().getReference();
         String timestamp = String.valueOf(System.currentTimeMillis());
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("sender",auth.getUid());
@@ -171,7 +173,15 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("message",message);
         hashMap.put("timestamp",timestamp);
         hashMap.put("isSeen",false);
-        reference.child("Chats").push().setValue(hashMap);
+        hashMap.put("type","text");
+        chatRef.child("Chats").child(uid).child(yourUid).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    chatRef.child("Chats").child(yourUid).child(uid).push().setValue(hashMap);
+                }
+            }
+        });
         chatMessage.setText("");
     }
 
@@ -221,6 +231,6 @@ public class ChatActivity extends AppCompatActivity {
         String time = String.valueOf(System.currentTimeMillis());
         //set offline status
         checkOnlineStatus(time);
-        refSeen.removeEventListener(seenListener);
+        //refSeen.removeEventListener(seenListener);
     }
 }

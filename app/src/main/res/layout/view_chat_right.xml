@@ -25,24 +25,28 @@
             android:textSize="16sp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/seenChat1"
+            android:id="@+id/timestampTv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seen"
-            android:textColor="@color/grey"
-            android:layout_gravity="end"
-            android:layout_marginTop="5dp"
-            android:textSize="14sp"/>
+            android:text="12h00"
+            android:layout_below="@+id/seenChat1"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
-
     <TextView
-        android:id="@+id/timestampTv1"
+        android:id="@+id/seenChat1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12h00"
+        android:text="Seen"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/grey"
+        android:padding="5dp"
+        android:textSize="12sp"
         android:layout_below="@+id/linearChat"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"/>
+        android:layout_alignParentEnd="true"/>
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="30dp"
         android:layout_height="30dp"

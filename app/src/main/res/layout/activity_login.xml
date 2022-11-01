@@ -14,6 +14,7 @@
         android:background="@drawable/bg_login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <EditText
@@ -40,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/bg_editext"
             android:hint="Password"
@@ -47,69 +49,79 @@
             android:minHeight="48dp"
             android:padding="40px"
             android:textColorHint="@color/darker"
-            app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtEmailLogin"
-            app:layout_constraintVertical_bias="0.09"
             tools:ignore="TouchTargetSizeCheck" />
 
-        <Button
-            android:id="@+id/btnSignIn"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:id="@+id/layoutView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="70dp"
-            android:background="@drawable/bg_signin"
-            android:text="Sign in"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="50dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewForgot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:text="Forgot password?"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtPasswordLogin" />
-
-        <TextView
-            android:id="@+id/textViewDontHave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Don't have an accound?"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textViewCreate"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSignIn"
-            app:layout_constraintVertical_bias="0.684" />
+            app:layout_constraintTop_toBottomOf="@+id/txtPasswordLogin">
 
-        <TextView
-            android:id="@+id/textViewCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="16dp"
-            android:text="Create"
-            android:textColor="@color/primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewDontHave"
-            app:layout_constraintTop_toBottomOf="@+id/btnSignIn"
-            app:layout_constraintVertical_bias="0.684" />
+            <Button
+                android:id="@+id/btnSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:background="@drawable/bg_signin"
+                android:text="Sign in"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textViewForgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot password?"
+                android:layout_marginEnd="32dp"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/btnSignIn"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_button"
+                android:layout_below="@+id/textViewForgot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/textViewDontHave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Don't have an accound?" />
+
+                <TextView
+                    android:id="@+id/textViewCreate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="128dp"
+                    android:text="Create"
+                    android:textColor="@color/primary"
+                    android:layout_toRightOf="@id/textViewDontHave"/>
+            </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/signin_phonenumber"
+                android:layout_width="match_parent"
+                android:text="Sign with phone"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_button"
+                android:background="@drawable/bg_signin"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="20dp"/>
+        </RelativeLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView

@@ -64,6 +64,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_chatbox"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="10dp"
         android:padding="5dp">
         <ImageButton
             android:id="@+id/chatBtn"
@@ -78,7 +81,7 @@
             android:hint="Viết gì đó..."
             android:layout_weight="1"
             android:paddingHorizontal="10dp"
-            android:inputType="textCapSentences|textMultiLine"/>
+            android:inputType="textCapSentences"/>
         <ImageButton
             android:id="@+id/chatSend"
             android:layout_width="50dp"

@@ -28,23 +28,22 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendProfile extends AppCompatActivity {
 
     private FirebaseAuth auth;
-    private DatabaseReference userRef,requestRef,friendRef;
-    private FirebaseUser mUser;
-    private String imageUrl,userName;
+    private DatabaseReference userRef,requestRef,contactRef;
+    private String imageUrl,userName,yourId,myId;
     private CircleImageView circleImageView;
     private TextView tvUserName;
     private Button btnKetBan,btnXoa;
-    private String currentState = "nothing_happen";
+    private String currentState = "new";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
-        String userId = getIntent().getStringExtra("keyValue");
-        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        yourId = getIntent().getStringExtra("keyValue");
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(yourId);
         requestRef = FirebaseDatabase.getInstance().getReference().child("Requests");
-        friendRef = FirebaseDatabase.getInstance().getReference().child("Friends");
+        contactRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
         auth = FirebaseAuth.getInstance();
-        mUser = auth.getCurrentUser();
+        myId = auth.getCurrentUser().getUid();
         circleImageView = findViewById(R.id.circleImageView2);
         tvUserName = findViewById(R.id.tvUserNameFriend);
         btnKetBan = findViewById(R.id.btnKetBan);
@@ -54,204 +53,9 @@ public class FriendProfile extends AppCompatActivity {
         btnKetBan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KetBan(userId);
+                SendFriendRequest();
             }
         });
-        CheckUserExitstance(userId);
-        btnXoa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                huyKetBan(userId);
-            }
-        });
-        CheckUserExitstance(userId);
-    }
-
-    private void huyKetBan(String id) {
-        if(currentState.equals("friend")){
-            friendRef.child(mUser.getUid()).child(id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        friendRef.child(id).child(mUser.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(FriendProfile.this, "Đã hủy kết bạn4", Toast.LENGTH_SHORT).show();
-                                currentState = "nothing_happen";
-                                btnKetBan.setText("Kết bạn");
-                                btnXoa.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-                }
-            });
-        }
-        if(currentState.equals("he_sent_pending")){
-            HashMap hashMap = new HashMap();
-            hashMap.put("status","decline");
-            requestRef.child(id).child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    Toast.makeText(FriendProfile.this, "Bạn đã từ chối yêu cầu kết bạn3", Toast.LENGTH_SHORT).show();
-                    currentState = "he_sent_decline";
-                    btnKetBan.setVisibility(View.VISIBLE);
-                    btnXoa.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
-
-    private void CheckUserExitstance(String id) {
-        friendRef.child(mUser.getUid()).child(id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    currentState = "friend";
-                    btnKetBan.setText("Gửi tin nhắn");
-                    btnXoa.setText("Hủy kết bạn");
-                    btnXoa.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        friendRef.child(id).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    currentState = "friend";
-                    btnKetBan.setText("Gửi tin nhắn");
-                    btnXoa.setText("Hủy kết bạn");
-                    btnXoa.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        requestRef.child(mUser.getUid()).child(id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    if(snapshot.child("status").getValue().toString().equals("pending")){
-                        currentState = "i_sent_pending";
-                        btnKetBan.setText("Hủy yêu cầu kết bạn");
-                        btnXoa.setVisibility(View.GONE);
-                    }if(snapshot.child("status").getValue().toString().equals("decline")){
-                        currentState = "i_sent_decline";
-                        btnKetBan.setText("Hủy yêu cầu kết bạn");
-                        btnXoa.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        requestRef.child(id).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    if(snapshot.child("status").getValue().toString().equals("pending")){
-                        currentState = "he_sent_pending";
-                        btnKetBan.setText("Chấp nhận");
-                        btnXoa.setText("Từ chối");
-                        btnXoa.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        if(currentState.equals("nothing_happen")){
-            currentState = "nothing_happen";
-            btnKetBan.setText("Kết bạn");
-            btnXoa.setVisibility(View.GONE);
-        }
-    }
-
-    private void KetBan(String Id) {
-        if(currentState.equals("nothing_happen")){
-            HashMap hashMap = new HashMap();
-            hashMap.put("status","pending");
-            requestRef.child(Id).child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
-//                        Toast.makeText(FriendProfile.this, "Bạn đã gửi lời mời kết bạn2!", Toast.LENGTH_SHORT).show();
-                        btnXoa.setVisibility(View.GONE);
-                        currentState = "i_sent_pending";
-                        btnKetBan.setText("Hủy yêu cầu kết bạn");
-
-                    }else{
-                        Toast.makeText(FriendProfile.this, ""+task.getException(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-        if(currentState.equals("i_sent_pending")||currentState.equals("i_sent_decline")){
-            requestRef.child(Id).child(mUser.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-//                        Toast.makeText(FriendProfile.this, "Bạn đã hủy lời mời kết bạn1!", Toast.LENGTH_SHORT).show();
-                        currentState = "nothing_happen";
-                        btnKetBan.setText("Kết bạn");
-                        btnXoa.setVisibility(View.GONE);
-                    }else{
-                        Toast.makeText(FriendProfile.this, ""+task.getException(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-        if(currentState.equals("he_sent_pending")){
-            requestRef.child(mUser.getUid()).child(Id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-//            requestRef.child(mUser.getUid()).child(Id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        HashMap hashMap = new HashMap();
-                        hashMap.put("status","friend");
-                        hashMap.put("hoten",userName);
-                        hashMap.put("image",imageUrl);
-                        friendRef.child(Id).child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                if(task.isSuccessful()){
-                                    friendRef.child(mUser.getUid()).child(Id).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-                                        @Override
-                                        public void onComplete(@NonNull Task task) {
-//                                            Toast.makeText(FriendProfile.this, "Kets bạn thành công!", Toast.LENGTH_SHORT).show();
-                                            currentState = "friend";
-                                            btnKetBan.setText("Gửi tin nhắn");
-                                            btnXoa.setText("Hủy kết bạn");
-                                            btnXoa.setVisibility(View.VISIBLE);
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-            requestRef.child(mUser.getUid()).child(Id).removeValue();
-        }
-        if(currentState.equals("friend")){
-            //khi da ket ban
-            Intent intent = new Intent(FriendProfile.this,ChatActivity.class);
-            intent.putExtra("yourUid",Id);
-            startActivity(intent);
-        }
     }
 
     private void LoadUser() {
@@ -264,6 +68,8 @@ public class FriendProfile extends AppCompatActivity {
 
                     Picasso.get().load(imageUrl).into(circleImageView);
                     tvUserName.setText(userName);
+                    
+                    GuiKetBan();
                 }else{
                     Toast.makeText(FriendProfile.this, "Không tìm thấy dữ liệu!", Toast.LENGTH_SHORT).show();
                 }
@@ -274,5 +80,192 @@ public class FriendProfile extends AppCompatActivity {
                 Toast.makeText(FriendProfile.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void GuiKetBan() {
+        requestRef.child(myId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChild(yourId)){
+                            String request_type = snapshot.child(yourId).child("request_type").getValue().toString();
+                            if(request_type.equals("sent")){
+                                currentState = "request_sent";
+                                btnKetBan.setText("Hủy lời mời kết bạn");
+                            }
+                            else if(request_type.equals("received")){
+                                currentState = "request_received";
+                                btnKetBan.setText("Chấp nhận kết bạn");
+                                btnXoa.setVisibility(View.VISIBLE);
+                                btnXoa.setEnabled(true);
+                                btnXoa.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        CancelFriendRequest();
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            contactRef.child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.hasChild(yourId)){
+                                        currentState = "friends";
+                                        btnKetBan.setText("Xoá bạn");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        if(!(myId.equals(yourId))){
+            btnKetBan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(currentState.equals("new")){
+                        SendFriendRequest();
+                    }
+                    if(currentState.equals("request_sent")){
+                        CancelFriendRequest();
+                    }
+                    if(currentState.equals("request_received")){
+                        AcceptFriend();
+                    }if (currentState.equals("friends")){
+                        RemoveContacts();
+                    }
+                }
+            });
+        }else{
+            btnKetBan.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void RemoveContacts() {
+        contactRef.child(myId).child(yourId)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            contactRef.child(yourId).child(myId)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                btnKetBan.setEnabled(true);
+                                                currentState = "new";
+                                                btnKetBan.setText("Kết bạn");
+                                                btnXoa.setVisibility(View.INVISIBLE);
+                                                btnXoa.setEnabled(false);
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    private void AcceptFriend() {
+        contactRef.child(myId).child(yourId)
+                .child("Contacts").setValue("Saved")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            contactRef.child(yourId).child(myId)
+                                    .child("Contacts").setValue("Saved")
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                requestRef.child(myId).child(yourId)
+                                                        .removeValue()
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if(task.isSuccessful()){
+                                                                    requestRef.child(yourId).child(myId)
+                                                                            .removeValue()
+                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                                    btnKetBan.setEnabled(true);
+                                                                                    currentState = "friends";
+                                                                                    btnKetBan.setText("Xóa bạn");
+                                                                                    btnXoa.setVisibility(View.INVISIBLE);
+                                                                                    btnXoa.setEnabled(false);
+                                                                                }
+                                                                            });
+                                                                }
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    private void CancelFriendRequest() {
+        requestRef.child(myId).child(yourId)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            requestRef.child(yourId).child(myId)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                btnKetBan.setEnabled(true);
+                                                currentState = "new";
+                                                btnKetBan.setText("Kết bạn");
+                                                btnXoa.setVisibility(View.INVISIBLE);
+                                                btnXoa.setEnabled(false);
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    private void SendFriendRequest() {
+        requestRef.child(myId).child(yourId)
+                .child("request_type").setValue("sent")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            requestRef.child(yourId).child(myId)
+                                    .child("request_type").setValue("received")
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                btnKetBan.setEnabled(true);
+                                                currentState = "request_sent";
+                                                btnKetBan.setText("Hủy lời mời kết bạn!");
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 }

@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText txtEmail,txtPassword;
-    private Button btnSignIn;
+    private Button btnSignIn,btnsignInWithPhone;
     private TextView tvCreate;
     private FirebaseAuth auth;
     private ProgressDialog loadingBar;
@@ -54,6 +54,13 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+        btnsignInWithPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this,LoginPhoneActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -100,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         tvCreate = findViewById(R.id.textViewCreate);
         loadingBar = new ProgressDialog(this);
         btnSignIn = findViewById(R.id.btnSignIn);
+        btnsignInWithPhone = findViewById(R.id.signin_phonenumber);
         auth = FirebaseAuth.getInstance();
     }
 }

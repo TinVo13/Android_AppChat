@@ -45,7 +45,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSearchFriend"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_TaoMoiGroup"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_TaoMoiGroup"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </RelativeLayout>

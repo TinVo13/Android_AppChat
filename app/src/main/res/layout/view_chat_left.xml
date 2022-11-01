@@ -20,28 +20,27 @@
         android:orientation="vertical">
         <TextView
             android:id="@+id/messageChat1"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tin nhan ne"
             android:textSize="16sp"
             android:textStyle="bold"/>
         <TextView
+            android:id="@+id/timestampTv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/seenChat1"
-            android:text="Seen"
-            android:visibility="gone"
-            android:textSize="14sp"
+            android:text="12h00"
+            android:layout_below="@+id/messageChat1"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"/>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/timestampTv1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12h00"
-        android:layout_below="@+id/linearChat"
-        android:layout_alignParentEnd="true"
+        android:id="@+id/seenChat1"
+        android:text="Seen"
+        android:visibility="gone"
+        android:textSize="14sp"
         android:layout_marginTop="5dp"/>
-
 </RelativeLayout>

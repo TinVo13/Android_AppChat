@@ -38,6 +38,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE = 101;
     private Button btnUpdate;
     private EditText txtUserName,txtStatus;
     private CircleImageView circleImageView;
@@ -46,6 +47,8 @@ public class SettingActivity extends AppCompatActivity {
     private String currentUserId;
     private DatabaseReference mRef;
     private Toolbar toolbar;
+    private Uri imageUri;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,14 @@ public class SettingActivity extends AppCompatActivity {
                 updateUser();
             }
         });
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent,REQUEST_CODE);
+            }
+        });
     }
 
     private void updateUser() {
@@ -69,17 +80,30 @@ public class SettingActivity extends AppCompatActivity {
         }else if(TextUtils.isEmpty(status)){
             Toast.makeText(this, "Vui lòng ghi trạng thái!", Toast.LENGTH_SHORT).show();
         }else{
-            HashMap hashMap = new HashMap<>();
-            hashMap.put("hoten",username);
-            hashMap.put("status",status);
-            mRef.child("Users").child(currentUserId).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            storageReference.child(currentUserId).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if(task.isSuccessful()){
-                        finish();
-                        Toast.makeText(SettingActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(SettingActivity.this, "Lỗi: "+task.getException(), Toast.LENGTH_SHORT).show();
+                        storageReference.child(currentUserId).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                HashMap hashMap = new HashMap<>();
+                                hashMap.put("hoten",username);
+                                hashMap.put("status",status);
+                                hashMap.put("image",uri.toString());
+                                mRef.child("Users").child(currentUserId).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            finish();
+                                            Toast.makeText(SettingActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(SettingActivity.this, "Lỗi: "+task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                 }
             });
@@ -115,5 +139,15 @@ public class SettingActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.appbarsetting);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Sửa hồ sơ người dùng");
+        storageReference = FirebaseStorage.getInstance().getReference().child("ProfileImage");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE&&resultCode==RESULT_OK&&data!=null){
+            imageUri=data.getData();
+            circleImageView.setImageURI(imageUri);
+        }
     }
 }
