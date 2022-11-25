@@ -73,7 +73,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         //convert to time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(timestamp));
-        String datetime = DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
+        String datetime = DateFormat.format("hh:mm aa",cal).toString();
         //set data
         holder.message.setText(message);
         holder.timestamp.setText(datetime);
@@ -95,7 +95,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
                         //delete message
                         String msgTimestamp = chatList.get(pos).getTimestamp();
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Chats");
-                        Query query = ref.orderByChild("timestamp").equalTo(msgTimestamp);
+                        Query query = ref.child(chat.getSender()).child(chat.getReceiver()).orderByChild("timestamp").equalTo(msgTimestamp);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {

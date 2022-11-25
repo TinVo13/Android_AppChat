@@ -49,6 +49,7 @@ public class SettingActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Uri imageUri;
     private StorageReference storageReference;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +74,40 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle("Đang cập nhât hồ sơ người dùng!");
+        progressDialog.setMessage("Vui lòng chờ...");
+        progressDialog.show();
         String username = txtUserName.getText().toString();
         String status = txtStatus.getText().toString();
         if (TextUtils.isEmpty(username)){
             Toast.makeText(this, "Vui lòng ghi tên người dùng!", Toast.LENGTH_SHORT).show();
         }else if(TextUtils.isEmpty(status)){
             Toast.makeText(this, "Vui lòng ghi trạng thái!", Toast.LENGTH_SHORT).show();
-        }else{
+        }else if(imageUri == null) {
+            storageReference.child(currentUserId).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    HashMap hashMap = new HashMap<>();
+                    hashMap.put("hoten",username);
+                    hashMap.put("status",status);
+                    mRef.child("Users").child(currentUserId).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                progressDialog.dismiss();
+                                finish();
+                                Toast.makeText(SettingActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                            }else{
+                                progressDialog.dismiss();
+                                Toast.makeText(SettingActivity.this, "Lỗi: "+task.getException(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        else if(imageUri!=null){
             storageReference.child(currentUserId).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -95,6 +123,7 @@ public class SettingActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
+                                            progressDialog.dismiss();
                                             finish();
                                             Toast.makeText(SettingActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                         }else{
@@ -140,6 +169,7 @@ public class SettingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Sửa hồ sơ người dùng");
         storageReference = FirebaseStorage.getInstance().getReference().child("ProfileImage");
+        progressDialog = new ProgressDialog(SettingActivity.this);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText txtEmail,txtPassword;
     private Button btnSignIn,btnsignInWithPhone;
-    private TextView tvCreate;
+    private TextView tvCreate,tvForgotPassword;
     private FirebaseAuth auth;
     private ProgressDialog loadingBar;
     @Override
@@ -63,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,ForgotPassword.class));
+            }
+        });
     }
 
     private void Login() {
@@ -81,12 +87,17 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        loadingBar.dismiss();
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                        if(auth.getCurrentUser().isEmailVerified()){
+                            loadingBar.dismiss();
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            loadingBar.dismiss();
+                            Toast.makeText(LoginActivity.this, "Vui lòng xác thực địa chỉ Email trước khi đăng nhập!", Toast.LENGTH_SHORT).show();
+                        }
                     }else if(task.isCanceled()){
                         loadingBar.dismiss();
                         Toast.makeText(LoginActivity.this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
@@ -109,5 +120,21 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn = findViewById(R.id.btnSignIn);
         btnsignInWithPhone = findViewById(R.id.signin_phonenumber);
         auth = FirebaseAuth.getInstance();
+        tvForgotPassword = findViewById(R.id.textViewForgot);
+    }
+    private void checkUser(){
+        FirebaseUser mUser = auth.getCurrentUser();
+        if(mUser!=null){
+            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkUser();
     }
 }

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.appchat.Entity.Chat;
+import com.example.appchat.Entity.Message;
 import com.example.appchat.Entity.User;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -28,6 +30,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,6 +99,28 @@ public class ChatFragment extends Fragment {
                         String username = snapshot.child("hoten").getValue().toString();
                         holder.userNameChatTv.setText(username);
                         Picasso.get().load(img).into(holder.circle_listChat);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                chatRef.child(userId).getRef().addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds:snapshot.getChildren()){
+                            Message message = ds.getValue(Message.class);
+
+                            Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+                            cal.setTimeInMillis(Long.parseLong(message.getTimestamp()));
+                            String datetime = DateFormat.format("hh:mm aa",cal).toString();
+                            holder.timestampChatTv.setText(datetime);
+                            holder.messageChatTv.setText(message.getMessage());
+                        }
+                        //Toast.makeText(getContext(), ""+message.getMessage(), Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
@@ -105,7 +132,7 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(),ChatActivity.class);
-                        intent.putExtra("yourId",getRef(pos).getKey());
+                        intent.putExtra("yourUid",getRef(pos).getKey());
                         startActivity(intent);
                     }
                 });

@@ -122,8 +122,8 @@ public class SetupActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Object o) {
                                         loadingBar.dismiss();
-                                        Toast.makeText(SetupActivity.this, "Đăng ký tài khoản thành công!", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(SetupActivity.this,MainActivity.class);
+                                        Toast.makeText(SetupActivity.this, "Đăng ký tài khoản thành công! Vui lòng xác thực địa chỉ email để đăng nhập tài khoản!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SetupActivity.this,LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }

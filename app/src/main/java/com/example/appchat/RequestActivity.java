@@ -70,7 +70,7 @@ public class RequestActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull RequestViewHolder holder, int position, @NonNull User model) {
                 int pos = position;
                 final String list_user_request = getRef(position).getKey();
-                userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+                userRef.child(list_user_request).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         String username = snapshot.child("hoten").getValue().toString();

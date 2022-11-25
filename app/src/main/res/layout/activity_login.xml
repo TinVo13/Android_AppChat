@@ -28,6 +28,7 @@
             android:hint="Email"
             android:minHeight="48dp"
             android:padding="40px"
+            android:inputType="textEmailAddress"
             android:textColorHint="@color/darker"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

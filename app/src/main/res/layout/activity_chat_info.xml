@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatInfoActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chatinfotoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary">
+        <ImageButton
+            android:id="@+id/btnBackChatInfo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:background="@android:color/transparent"/>
+    </androidx.appcompat.widget.Toolbar>
+    <RelativeLayout
+        android:id="@+id/chatInfoView"
+        android:layout_below="@id/chatinfotoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_view_chat_info">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/chatInfoImg"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/profile"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            app:civ_border_width="1dp"/>
+        <TextView
+            android:id="@+id/chatInfoHoTen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:text="Ho ten"
+            android:textStyle="bold"
+            android:layout_below="@id/chatInfoImg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/chatInfoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_view_chat_info"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/timTinNhanTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tim kiem tin nhan"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_search"
+            android:padding="10dp"
+            android:drawablePadding="10dp" />
+        <TextView
+            android:id="@+id/xoaBanTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xóa bạn"
+            android:textColor="@color/red"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_delete_friend"
+            android:padding="10dp"
+            android:layout_below="@id/timTinNhanTv"
+            android:drawablePadding="10dp"
+            android:layout_marginTop="10dp"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -58,7 +58,16 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         //init component
         initComponent();
-
+        //friend info
+        chatInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatActivity.this,ChatInfoActivity.class);
+                intent.putExtra("keyValue",yourUid);
+                startActivity(intent);
+                //finish();
+            }
+        });
         //check status
         checkUserStatus();
         //search user
@@ -81,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
                         }else{
                             Calendar cal = Calendar.getInstance(Locale.ENGLISH);
                             cal.setTimeInMillis(Long.parseLong(status));
-                            String datetime = DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
+                            String datetime = DateFormat.format("hh:mm aa",cal).toString();
                             chatStatusTv.setText("Truy cập lần cuối: "+datetime);
                         }
                         //set value
