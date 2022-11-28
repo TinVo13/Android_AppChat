@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleDenie"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/black"/>
+        <TextView
+            android:id="@+id/textViewNameDenie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên ở đây"
+            android:layout_toRightOf="@+id/circleDenie"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_centerVertical="true"/>
+        <Button
+            android:id="@+id/btnDenie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Hủy"
+            android:background="@color/red"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+</RelativeLayout>
