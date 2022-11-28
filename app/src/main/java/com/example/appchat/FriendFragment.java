@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class FriendFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText txtSearch;
     private ImageButton btnSearch;
+    private Button btnThemBan,btnRequest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +71,21 @@ public class FriendFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        btnThemBan = view.findViewById(R.id.btn_addFriend);
+        btnThemBan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),SearchFriendActivity.class));
+            }
+        });
+        btnRequest = view.findViewById(R.id.btn_requestFriend);
+        btnRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),RequestActivity.class));
             }
         });
         return view;

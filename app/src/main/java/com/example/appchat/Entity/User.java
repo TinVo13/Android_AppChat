@@ -1,7 +1,7 @@
 package com.example.appchat.Entity;
 
 public class User {
-    private String hoten,sdt,ngaysinh,image,status;
+    private String uid,hoten,sdt,ngaysinh,image,status;
 
     public String getStatus() {
         return status;
@@ -19,6 +19,13 @@ public class User {
         this.sdt = sdt;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public String getImage() {
         return image;
@@ -44,7 +51,16 @@ public class User {
         this.ngaysinh = ngaysinh;
     }
 
-    public User(String hoten, String sdt, String ngaysinh, String image, String status) {
+//    public User(String hoten, String sdt, String ngaysinh, String image, String status) {
+//        this.hoten = hoten;
+//        this.sdt = sdt;
+//        this.ngaysinh = ngaysinh;
+//        this.image = image;
+//        this.status = status;
+//    }
+
+    public User(String uid, String hoten, String sdt, String ngaysinh, String image, String status) {
+        this.uid = uid;
         this.hoten = hoten;
         this.sdt = sdt;
         this.ngaysinh = ngaysinh;

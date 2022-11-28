@@ -18,40 +18,58 @@
             android:src="@drawable/ic_arrow_back_24"
             android:background="@android:color/transparent"/>
     </androidx.appcompat.widget.Toolbar>
-    <RelativeLayout
-        android:id="@+id/chatInfoView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/chatinfotoolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_view_chat_info">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/chatInfoImg"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/profile"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            app:civ_border_width="1dp"/>
-        <TextView
-            android:id="@+id/chatInfoHoTen"
-            android:layout_width="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="20dp">
+        <RelativeLayout
+            android:id="@+id/chatInfoView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:text="Ho ten"
-            android:textStyle="bold"
-            android:layout_below="@id/chatInfoImg"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-    </RelativeLayout>
+            android:background="@drawable/bg_view_chat_info">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/chatInfoImg"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/profile"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                app:civ_border_width="1dp"/>
+            <TextView
+                android:id="@+id/chatInfoHoTen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:text="Ho ten"
+                android:textStyle="bold"
+                android:layout_below="@id/chatInfoImg"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="'Status'"
+                android:textColor="@color/primary"
+                android:layout_below="@id/chatInfoHoTen"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
-    <RelativeLayout
-        android:layout_below="@id/chatInfoView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview1"
+        android:layout_below="@id/cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/bg_view_chat_info"
-        android:padding="10dp">
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/third"
+        app:cardCornerRadius="10dp">
         <TextView
             android:id="@+id/timTinNhanTv"
             android:layout_width="match_parent"
@@ -62,6 +80,34 @@
             android:drawableStart="@drawable/ic_search"
             android:padding="10dp"
             android:drawablePadding="10dp" />
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_below="@+id/cardview1"
+        android:id="@+id/cardview2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/third"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:id="@+id/textViewAddGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tạo nhóm với người này"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:drawableStart="@drawable/add_user"
+            android:drawablePadding="10dp"/>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_below="@+id/cardview2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/third"
+        android:layout_marginHorizontal="10dp"
+        app:cardCornerRadius="10dp">
         <TextView
             android:id="@+id/xoaBanTv"
             android:layout_width="match_parent"
@@ -73,7 +119,7 @@
             android:drawableStart="@drawable/ic_delete_friend"
             android:padding="10dp"
             android:layout_below="@id/timTinNhanTv"
-            android:drawablePadding="10dp"
-            android:layout_marginTop="10dp"/>
-    </RelativeLayout>
+            android:drawablePadding="10dp" />
+    </androidx.cardview.widget.CardView>
+
 </RelativeLayout>

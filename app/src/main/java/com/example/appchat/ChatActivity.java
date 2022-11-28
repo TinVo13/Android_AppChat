@@ -68,10 +68,24 @@ public class ChatActivity extends AppCompatActivity {
                 //finish();
             }
         });
+        chatSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = chatMessage.getText().toString().trim();
+                if(TextUtils.isEmpty(message)){
+                    Toast.makeText(ChatActivity.this, "Khong the de trong tin nhan", Toast.LENGTH_SHORT).show();
+                }else{
+                    sendMessage(message);
+                }
+            }
+        });
         //check status
         checkUserStatus();
         //search user
         searchUser();
+
+        readMessage();
+        seenMessage(yourUid);
     }
 
     private void searchUser() {
@@ -109,30 +123,20 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-        chatSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = chatMessage.getText().toString().trim();
-                if(TextUtils.isEmpty(message)){
-                    Toast.makeText(ChatActivity.this, "Khong the de trong tin nhan", Toast.LENGTH_SHORT).show();
-                }else{
-                    sendMessage(message);
-                }
-            }
-        });
-        readMessage();
-        //seenMessage();
     }
 
-    private void seenMessage() {
-        refSeen = FirebaseDatabase.getInstance().getReference("Chats");
+    private void seenMessage(String userId) {
+        boolean seen = true;
+        refSeen = FirebaseDatabase.getInstance().getReference().child("Chats").child(uid).child(userId);
         seenListener = refSeen.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds: snapshot.getChildren()){
                     Chat chat = ds.getValue(Chat.class);
-                    if(chat.getReceiver().equals(uid)&&chat.getSender().equals(yourUid)){
+                    //Toast.makeText(ChatActivity.this, ""+chat.getSeen(), Toast.LENGTH_SHORT).show();
+                    if(chat.getReceiver().equals(uid)&&chat.getSender().equals(userId)==true){
                         HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("isSeen",true);
                         ds.getRef().updateChildren(hashMap);
                     }
                 }
@@ -223,6 +227,7 @@ public class ChatActivity extends AppCompatActivity {
         chatImg = findViewById(R.id.chatImg);
         auth = FirebaseAuth.getInstance();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
         chatRecyclerView.setHasFixedSize(true);
         chatRecyclerView.setLayoutManager(linearLayoutManager);
     }
@@ -240,6 +245,6 @@ public class ChatActivity extends AppCompatActivity {
         String time = String.valueOf(System.currentTimeMillis());
         //set offline status
         checkOnlineStatus(time);
-        //refSeen.removeEventListener(seenListener);
+        refSeen.removeEventListener(seenListener);
     }
 }

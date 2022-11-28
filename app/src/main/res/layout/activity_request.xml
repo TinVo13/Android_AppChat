@@ -27,16 +27,24 @@
                 android:layout_centerInParent="true"
                 android:layout_toRightOf="@+id/btnBackRequest"
                 android:text="Yêu cầu kết bạn"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewRequest"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_request"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_request"
+        android:layout_centerHorizontal="true"
+        app:tabBackground="@color/third"
+        app:tabSelectedTextColor="@color/primary"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tabLayout"/>
 
 </RelativeLayout>

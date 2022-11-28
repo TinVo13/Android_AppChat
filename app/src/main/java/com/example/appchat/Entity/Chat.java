@@ -49,12 +49,10 @@ public class Chat {
         this.timestamp = timestamp;
     }
 
-    @PropertyName("isSeen")
-    public boolean isSeen() {
+    public boolean getSeen() {
         return isSeen;
     }
 
-    @PropertyName("isSeen")
     public void setSeen(boolean seen) {
         isSeen = seen;
     }
