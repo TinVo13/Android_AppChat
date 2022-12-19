@@ -117,7 +117,11 @@ public class ChatFragment extends Fragment {
                             cal.setTimeInMillis(Long.parseLong(message.getTimestamp()));
                             String datetime = DateFormat.format("hh:mm aa",cal).toString();
                             holder.timestampChatTv.setText(datetime);
-                            holder.messageChatTv.setText(message.getMessage());
+                            if (message.getType().equals("image")){
+                                holder.messageChatTv.setText("Gửi một ảnh...");
+                            }else{
+                                holder.messageChatTv.setText(message.getMessage());
+                            }
                         }
                         //Toast.makeText(getContext(), ""+message.getMessage(), Toast.LENGTH_SHORT).show();
 

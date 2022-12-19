@@ -1,12 +1,19 @@
 package com.example.appchat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -18,6 +25,8 @@ import android.widget.Toast;
 import com.example.appchat.Adapter.AdapterChat;
 import com.example.appchat.Entity.Chat;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,10 +34,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -38,8 +51,10 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CODE = 108;
     private TextView chatNameTv,chatStatusTv;
-    private ImageButton chatSend,chatBtn,chatInfo;
+    private ImageButton chatSend,chatSendFile,chatInfo,chatBack;
     private RecyclerView chatRecyclerView;
     private CircleImageView chatImg;
     private EditText chatMessage;
@@ -51,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
     private List<Chat> chatList;
     private AdapterChat adapterChat;
     private DatabaseReference refSeen,chatRef;
+    private Uri imageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,25 +75,42 @@ public class ChatActivity extends AppCompatActivity {
         //init component
         initComponent();
         //friend info
-        chatInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChatActivity.this,ChatInfoActivity.class);
-                intent.putExtra("keyValue",yourUid);
-                startActivity(intent);
-                //finish();
+        chatInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(ChatActivity.this,ChatInfoActivity.class);
+            intent.putExtra("keyValue",yourUid);
+            startActivity(intent);
+            //finish();
+        });
+        chatSend.setOnClickListener(v -> {
+            String message = chatMessage.getText().toString().trim();
+            if(TextUtils.isEmpty(message)){
+                Toast.makeText(ChatActivity.this, "Khong the de trong tin nhan", Toast.LENGTH_SHORT).show();
+            }else{
+                sendMessage(message);
             }
         });
-        chatSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = chatMessage.getText().toString().trim();
-                if(TextUtils.isEmpty(message)){
-                    Toast.makeText(ChatActivity.this, "Khong the de trong tin nhan", Toast.LENGTH_SHORT).show();
-                }else{
-                    sendMessage(message);
-                }
-            }
+        chatSendFile.setOnClickListener(v->{
+            String[] listtacvu = {"Hình ảnh & Video","File"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Chọn 1 tác vụ!")
+                    .setItems(listtacvu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case 0:{
+                                    showImagePickDialog();
+                                    break;
+                                }
+                                case 1:{
+                                    Toast.makeText(ChatActivity.this, "Chon 2", Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+                        }
+                    }).show();
+        });
+        chatBack.setOnClickListener(nv->{
+            finish();
         });
         //check status
         checkUserStatus();
@@ -86,6 +119,12 @@ public class ChatActivity extends AppCompatActivity {
 
         readMessage();
         seenMessage(yourUid);
+    }
+
+    private void showImagePickDialog() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent,REQUEST_CODE);
     }
 
     private void searchUser() {
@@ -197,6 +236,74 @@ public class ChatActivity extends AppCompatActivity {
         });
         chatMessage.setText("");
     }
+    private void sendImageMessage(Uri imageUri) throws IOException {
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang gửi hình ảnh!");
+        progressDialog.setMessage("Vui lòng chờ vài giây...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        String timestamp = ""+System.currentTimeMillis();
+        String path = "ChatImages/"+"_post"+timestamp;
+        //get bitmap from image uri
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),imageUri);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        byte[] data = byteArrayOutputStream.toByteArray();
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(path);
+        ref.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //upload image
+                progressDialog.dismiss();
+                //get url
+                Task<Uri> taskUri = taskSnapshot.getStorage().getDownloadUrl();
+                while (!taskUri.isSuccessful());
+                String downloadUri = taskUri.getResult().toString();
+
+                if(taskUri.isSuccessful()){
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+                    HashMap<String,Object> hashMap = new HashMap<>();
+                    hashMap.put("sender",uid);
+                    hashMap.put("receiver",yourUid);
+                    hashMap.put("message",downloadUri);
+                    hashMap.put("timestamp",timestamp);
+                    hashMap.put("isSeen",false);
+                    hashMap.put("type","image");
+
+                    reference.child("Chats").child(uid).child(yourUid).push().setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                reference.child("Chats").child(yourUid).child(uid).push().setValue(hashMap);
+                            }
+                        }
+                    });
+
+                    //gui thong bao
+//                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid);
+//                    ref.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 
     private void checkUserStatus() {
         FirebaseUser user = auth.getCurrentUser();
@@ -220,8 +327,9 @@ public class ChatActivity extends AppCompatActivity {
         chatNameTv = findViewById(R.id.chatNameTv);
         chatStatusTv = findViewById(R.id.chatStatusTv);
         chatSend = findViewById(R.id.chatSend);
-        chatBtn = findViewById(R.id.chatBtn);
+        chatSendFile = findViewById(R.id.chatBtn);
         chatInfo = findViewById(R.id.chatInfo);
+        chatBack = findViewById(R.id.btnBackChat);
         chatMessage = findViewById(R.id.chatMessage);
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
         chatImg = findViewById(R.id.chatImg);
@@ -247,4 +355,18 @@ public class ChatActivity extends AppCompatActivity {
         checkOnlineStatus(time);
         refSeen.removeEventListener(seenListener);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE&&resultCode==RESULT_OK&&data!=null){
+            imageUri = data.getData();
+            try {
+                sendImageMessage(imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

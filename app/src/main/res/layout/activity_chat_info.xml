@@ -10,13 +10,14 @@
         android:id="@+id/chatinfotoolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary">
+        android:background="@color/primary"
+        android:padding="10dp">
         <ImageButton
             android:id="@+id/btnBackChatInfo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_arrow_back_24"
-            android:background="@android:color/transparent"/>
+            android:background="@drawable/bg_roundcorner"/>
     </androidx.appcompat.widget.Toolbar>
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview"
@@ -98,7 +99,7 @@
             android:padding="10dp"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:drawableStart="@drawable/add_user"
+            android:drawableStart="@drawable/ic_add_people"
             android:drawablePadding="10dp"/>
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView

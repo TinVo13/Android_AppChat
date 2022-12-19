@@ -25,7 +25,7 @@
             android:contentDescription="TODO"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="32dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp" />
     </RelativeLayout>
     <!-- TODO: Update blank fragment layout -->

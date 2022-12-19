@@ -17,15 +17,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_alignParentTop="true">
-            <Button
-                android:id="@+id/btn_addFriend"
-                android:background="@color/second"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Thêm bạn"
-                android:layout_margin="10dp"/>
+<!--            <Button-->
+<!--                android:id="@+id/btn_addFriend"-->
+<!--                android:background="@color/second"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Thêm bạn"-->
+<!--                android:layout_margin="10dp"/>-->
             <Button
                 android:id="@+id/btn_requestFriend"
+                android:layout_marginTop="10dp"
                 android:background="@color/second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="10dp"
-                android:drawableLeft="@drawable/ic_search"
+                android:drawableStart="@drawable/ic_search"
                 android:hint="Tìm kiếm bạn bè"
                 android:padding="15dp"
                 android:drawablePadding="10dp" />

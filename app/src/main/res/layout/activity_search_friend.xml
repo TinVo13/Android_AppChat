@@ -17,8 +17,7 @@
             android:layout_height="48dp"
             android:src="@drawable/ic_arrow_back_24"
             android:padding="10dp"
-            android:layout_alignParentRight="@+id/txtSearch"
-            android:background="@android:color/transparent"/>
+            android:background="@drawable/bg_roundcorner" />
 
         <EditText
             android:id="@+id/txtSearch"
@@ -29,7 +28,7 @@
             android:padding="15dp"
             android:textColor="@color/darker"
             android:textColorHint="@color/darker"
-            android:background="@drawable/bg_search"/>
+            style="@style/FirebaseUI.TextInputEditText" />
     </LinearLayout>
     <Button
         android:id="@+id/btn_TaoMoiGroup"
@@ -38,7 +37,7 @@
         android:text="Tạo mới group"
         android:layout_marginHorizontal="10dp"
         android:textAlignment="textStart"
-        android:drawableLeft="@drawable/ic_baseline_person_add_24"
+        android:drawableStart="@drawable/ic_baseline_person_add_24"
         android:drawablePadding="10dp"
         android:layout_below="@+id/linearLayout"/>
 

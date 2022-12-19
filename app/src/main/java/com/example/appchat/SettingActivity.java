@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,13 +41,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 101;
     private Button btnUpdate;
+    private ImageButton backInfo;
     private EditText txtUserName,txtStatus;
     private CircleImageView circleImageView;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private String currentUserId;
     private DatabaseReference mRef;
-    private Toolbar toolbar;
     private Uri imageUri;
     private StorageReference storageReference;
     private ProgressDialog progressDialog;
@@ -69,6 +70,12 @@ public class SettingActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent,REQUEST_CODE);
+            }
+        });
+        backInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -164,10 +171,8 @@ public class SettingActivity extends AppCompatActivity {
         circleImageView = findViewById(R.id.circleImageView);
         auth = FirebaseAuth.getInstance();
         currentUserId = auth.getCurrentUser().getUid();
+        backInfo= findViewById(R.id.backInfo);
         mRef = FirebaseDatabase.getInstance().getReference();
-        toolbar = findViewById(R.id.appbarsetting);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Sửa hồ sơ người dùng");
         storageReference = FirebaseStorage.getInstance().getReference().child("ProfileImage");
         progressDialog = new ProgressDialog(SettingActivity.this);
     }

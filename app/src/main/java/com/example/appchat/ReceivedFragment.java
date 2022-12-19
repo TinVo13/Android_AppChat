@@ -65,7 +65,7 @@ public class ReceivedFragment extends Fragment {
                             listUser.add(user);
                             adapterRequestFriend = new AdapterRequestFriend(listUser,getContext());
                             recyclerViewRequest.setAdapter(adapterRequestFriend);
-                            adapterRequestFriend.notifyDataSetChanged();
+//                            adapterRequestFriend.notifyDataSetChanged();
                         }
 
                         @Override
@@ -73,7 +73,7 @@ public class ReceivedFragment extends Fragment {
                             Toast.makeText(getContext(), "Loi", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    adapterRequestFriend.notifyDataSetChanged();
+//                    adapterRequestFriend.notifyDataSetChanged();
                 }
             }
 

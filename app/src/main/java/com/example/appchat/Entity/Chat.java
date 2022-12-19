@@ -3,7 +3,7 @@ package com.example.appchat.Entity;
 import com.google.firebase.database.PropertyName;
 
 public class Chat {
-    private String message, receiver, sender, timestamp;
+    private String message, receiver, sender, timestamp,type;
     private boolean isSeen;
 
     public Chat(String message, String receiver, String sender, String timestamp, boolean isSeen) {
@@ -14,7 +14,24 @@ public class Chat {
         this.isSeen = isSeen;
     }
 
+    public Chat(String message, String receiver, String sender, String timestamp, String type, boolean isSeen) {
+        this.message = message;
+        this.receiver = receiver;
+        this.sender = sender;
+        this.timestamp = timestamp;
+        this.type = type;
+        this.isSeen = isSeen;
+    }
+
     public Chat() {
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMessage() {

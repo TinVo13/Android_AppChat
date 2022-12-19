@@ -13,18 +13,25 @@
         android:background="@color/primary"
         android:padding="10dp"
         android:id="@+id/toolbar">
+        <ImageButton
+            android:id="@+id/btnBackChat"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_arrow_back_24"
+            android:background="@android:color/transparent"/>
         <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginLeft="25dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/chatImg"
             android:src="@drawable/profile"
-            app:civ_border_color="@color/primary"
+            app:civ_border_color="@color/black"
             app:civ_border_width="1dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginStart="30dp">
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:id="@+id/chatNameTv"
@@ -42,14 +49,15 @@
                 android:textColor="@color/grey"
                 android:layout_marginTop="5dp"/>
         </LinearLayout>
+
         <ImageButton
             android:id="@+id/chatInfo"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_menu"
-            android:background="@android:color/transparent"
             android:layout_gravity="end"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_menu"/>
     </androidx.appcompat.widget.Toolbar>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
@@ -86,7 +94,7 @@
             android:inputType="textCapSentences"/>
         <ImageButton
             android:id="@+id/chatSend"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_send"
             android:background="@android:color/transparent"/>

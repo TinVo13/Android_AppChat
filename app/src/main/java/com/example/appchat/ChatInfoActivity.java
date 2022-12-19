@@ -52,7 +52,7 @@ public class ChatInfoActivity extends AppCompatActivity {
                         .setCancelable(true)
                         .setTitle("Bạn có chắc muốn xóa bạn với người này?")
                         .setIcon(R.drawable.ic_warning)
-                        .setMessage("Nguời này không biết đâu :))")
+                        .setMessage("Nguời này không biết đâu!:))")
                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

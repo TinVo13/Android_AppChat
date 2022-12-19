@@ -45,5 +45,5 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="32dp"
         android:layout_marginRight="32dp"
-        android:src="@drawable/ic_next" />
+        android:src="@drawable/ic_done" />
 </RelativeLayout>

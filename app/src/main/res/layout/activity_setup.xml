@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,101 +15,100 @@
         android:layout_marginTop="32dp"
         android:text="Đăng ký thông tin"
         android:textSize="34sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="40dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        android:layout_below="@id/textView"
+        android:layout_marginTop="65dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
                 android:src="@drawable/profile"
                 app:civ_border_color="#FF000000"
                 app:civ_border_width="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_centerHorizontal="true"/>
 
             <EditText
                 android:id="@+id/txtHoTen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="32dp"
                 android:background="@drawable/bg_editext"
                 android:hint="Họ và tên"
-                android:padding="40px"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="10dp"
+                android:padding="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/profile_image"/>
+
+            <RelativeLayout
+                android:id="@+id/linear"
+                android:layout_below="@id/txtHoTen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+                <EditText
+                    android:id="@+id/txtNgaySinh"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_editext"
+                    android:hint="Ngày sinh"
+                    android:drawableStart="@drawable/ic_baseline_date_range_24"
+                    android:drawablePadding="10dp"
+                    android:padding="15dp"
+                    android:inputType="date"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnChonNgay"
+                    android:layout_toEndOf="@id/txtNgaySinh"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_signin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chọn"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="10dp"/>
+            </RelativeLayout>
+
 
             <EditText
-                        android:id="@+id/txtNgaySinh"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="32dp"
-                        android:background="@drawable/bg_editext"
-                        android:hint="Ngày sinh"
-                        android:padding="40px"
-                        android:inputType="date"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/txtHoTen" />
+                android:id="@+id/txtSDT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_editext"
+                android:hint="Số điện thoại"
+                android:layout_marginTop="20dp"
+                android:inputType="phone"
+                android:padding="15dp"
+                android:drawableStart="@drawable/ic_baseline_date_range_24"
+                android:paddingBottom="10dp"
+                android:drawablePadding="10dp"
+                android:layout_below="@id/linear"/>
 
-                    <EditText
-                        android:id="@+id/txtSDT"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="32dp"
-                        android:background="@drawable/bg_editext"
-                        android:hint="Số điện thoại"
-                        android:inputType="phone"
-                        android:padding="40px"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/txtNgaySinh" />
-
-
-                    <Button
-                        android:id="@+id/btnXacNhanTT"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="32dp"
-                        android:text="Xác nhận"
-                        android:textColor="@color/white"
-                        android:background="@drawable/bg_signin"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/btnXacNhanTT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Xác nhận"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_signin"
+                android:layout_below="@id/txtSDT"/>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

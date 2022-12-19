@@ -3,19 +3,20 @@ package com.example.appchat.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.appchat.Entity.Chat;
 import com.example.appchat.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,11 +70,22 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         Chat chat = chatList.get(position);
         String message = chat.getMessage();
         String timestamp = chat.getTimestamp();
+        String type = chat.getType();
 
         //convert to time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(timestamp));
         String datetime = DateFormat.format("hh:mm aa",cal).toString();
+
+        if(type.equals("text")){
+            holder.imageView.setVisibility(View.GONE);
+            holder.message.setVisibility(View.VISIBLE);
+            holder.message.setText(message);
+        }else{
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.message.setVisibility(View.GONE);
+            Picasso.get().load(message).placeholder(R.drawable.profile).into(holder.imageView);
+        }
         //set data
         holder.message.setText(message);
         holder.timestamp.setText(datetime);
@@ -83,54 +95,92 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
             Picasso.get().load(imageUrl).placeholder(R.drawable.profile).into(holder.imgChat);
         }
         //click to show delete dialog
-        holder.messageLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Xóa tin nhắn");
-                builder.setMessage("Bạn có chắc muốn xóa tin nhắn này? Điều này sẽ xóa tin nhắn vĩnh viễn!");
-                builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+        holder.imageButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Thu hồi tin nhắn");
+            builder.setMessage("Bạn có chắc muốn thu hồi tin nhắn này?");
+            builder.setPositiveButton("Thu hồi", (dialog, which) -> {
+                //delete message
+                String msgTimestamp = chatList.get(pos).getTimestamp();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Chats");
+                Query query = ref.child(chat.getSender()).child(chat.getReceiver()).orderByChild("timestamp").equalTo(msgTimestamp);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //delete message
-                        String msgTimestamp = chatList.get(pos).getTimestamp();
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Chats");
-                        Query query = ref.child(chat.getSender()).child(chat.getReceiver()).orderByChild("timestamp").equalTo(msgTimestamp);
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot ds: snapshot.getChildren()){
-                                    if(ds.child("sender").getValue().equals(auth.getUid())){
-                                        //remove the message
-                                        //ds.getRef().removeValue();
-                                        //set message when delete
-                                        HashMap<String,Object> hashMap = new HashMap<>();
-                                        hashMap.put("message","Tin nhắn đã xóa...");
-                                        ds.getRef().updateChildren(hashMap);
-                                    }
-                                    else{
-                                        Toast.makeText(context, "Bạn không thể xóa tin nhắn của người khác!", Toast.LENGTH_SHORT).show();
-                                    }
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds: snapshot.getChildren()){
+                            if(ds.child("sender").getValue().equals(auth.getUid())){
+                                //remove the message
+                                //ds.getRef().removeValue();
+                                //set message when delete
+                                HashMap<String,Object> hashMap = new HashMap<>();
+                                if(ds.child("type").getValue().equals("text")){
+                                    hashMap.put("message","Tin nhắn đã thu hồi");
+                                    ref.child(chat.getReceiver()).child(chat.getSender()).orderByChild("timestamp").equalTo(msgTimestamp)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for(DataSnapshot ds : snapshot.getChildren()){
+                                                        if(ds.child("type").getValue().equals("text")){
+                                                            hashMap.put("message","Tin nhắn đã thu hồi");
+                                                        }
+                                                        else if(ds.child("type").getValue().equals("image")){
+                                                            hashMap.put("message","Tin nhắn đã thu hồi");
+                                                            hashMap.put("type","text");
+                                                        }
+                                                        ds.getRef().updateChildren(hashMap);
+                                                    }
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
                                 }
-                            }
+                                else if(ds.child("type").getValue().equals("image")){
+                                    hashMap.put("message","Tin nhắn đã thu hồi");
+                                    hashMap.put("type","text");
+                                    ref.child(chat.getReceiver()).child(chat.getSender()).orderByChild("timestamp").equalTo(msgTimestamp)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    for(DataSnapshot ds : snapshot.getChildren()){
+                                                        if(ds.child("type").getValue().equals("text")){
+                                                            hashMap.put("message","Tin nhắn đã thu hồi");
+                                                        }
+                                                        else if(ds.child("type").getValue().equals("image")){
+                                                            hashMap.put("message","Tin nhắn đã thu hồi");
+                                                            hashMap.put("type","text");
+                                                        }
+                                                        ds.getRef().updateChildren(hashMap);
+                                                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                                }
 
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                }
+                                ds.getRef().updateChildren(hashMap);
                             }
-                        });
+                            else{
+                                Toast.makeText(context, "Bạn không thể xóa tin nhắn của người khác!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
-                });
-                //cancel
-                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
-                builder.create().show();
-                return true;
-            }
+            });
+            //cancel
+            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
         });
         //set seen status
         if(position == chatList.size()-1){
@@ -160,17 +210,20 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
 
     static class MyHolder extends RecyclerView.ViewHolder{
         CircleImageView imgChat;
+        ImageView imageView;
         TextView timestamp,isSeen,message;
-        RelativeLayout messageLayout;
+        LinearLayout messageLayout;
+        ImageButton imageButton;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             imgChat = itemView.findViewById(R.id.imgChat1);
+            imageView = itemView.findViewById(R.id.image1);
             timestamp = itemView.findViewById(R.id.timestampTv1);
             isSeen = itemView.findViewById(R.id.seenChat1);
             message = itemView.findViewById(R.id.messageChat1);
-            messageLayout = itemView.findViewById(R.id.messageLayout);
-
+            messageLayout = itemView.findViewById(R.id.linearChat);
+            imageButton = itemView.findViewById(R.id.ib_option);
         }
     }
 }

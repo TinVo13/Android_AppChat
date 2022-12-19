@@ -66,9 +66,9 @@ public class SendedFragment extends Fragment {
                             listUser.add(user);
                             adapterDenieRequestFriend = new AdapterDenieRequestFriend(listUser);
                             recyclerView.setAdapter(adapterDenieRequestFriend);
-                            DividerItemDecoration decoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-                            recyclerView.addItemDecoration(decoration);
-                            adapterDenieRequestFriend.notifyDataSetChanged();
+//                            DividerItemDecoration decoration = new DividerItemDecoration(,DividerItemDecoration.VERTICAL);
+//                            recyclerView.addItemDecoration(decoration);
+//                            adapterDenieRequestFriend.notifyDataSetChanged();
                         }
 
                         @Override

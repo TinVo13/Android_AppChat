@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -54,34 +55,35 @@ public class RegisterActivity extends AppCompatActivity {
             loadingBar.setMessage("Vui lòng chờ vài giây!");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
-            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+            checkUserExist(email,password);
+        }
+    }
+    private void checkUserExist(String email,String password){
+        auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
+            boolean isNewUser = task.getResult().getSignInMethods().isEmpty();
+            if(isNewUser){
+                auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(v -> {
                     if(task.isSuccessful()){
                         FirebaseUser fuser = auth.getCurrentUser();
-                        fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                loadingBar.dismiss();
-                                Intent intent = new Intent(RegisterActivity.this, SetupActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterActivity.this, "Email not send "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        assert fuser != null;
+                        fuser.sendEmailVerification().addOnSuccessListener(unused -> {
+                            loadingBar.dismiss();
+                            Intent intent = new Intent(RegisterActivity.this, SetupActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }).addOnFailureListener(e -> Toast.makeText(RegisterActivity.this, "Email not send "+e.getMessage(), Toast.LENGTH_SHORT).show());
 
                     }else if(task.isCanceled()){
                         loadingBar.dismiss();
-                        Toast.makeText(RegisterActivity.this, "Đăng ký thất bại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Email đã tồn tại! Vui lòng chọn 1 email khác.", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
-        }
+                });
+            }else {
+                loadingBar.dismiss();
+                Toast.makeText(this, "Email đã được sử dụng. Vui lòng chọn 1 email khác!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showError(EditText field, String s) {

@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this,RequestActivity.class);
             startActivity(intent);
         }
+        if(item.getItemId() == R.id.doimatkhau){
+            startActivity(new Intent(MainActivity.this,ResetPasswordActivity.class));
+        }
         return true;
     }
 }

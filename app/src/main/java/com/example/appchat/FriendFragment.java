@@ -2,12 +2,9 @@ package com.example.appchat;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.appchat.Entity.User;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -43,19 +39,18 @@ public class FriendFragment extends Fragment {
     private FirebaseUser mUser;
     private RecyclerView recyclerView;
     private EditText txtSearch;
-    private ImageButton btnSearch;
-    private Button btnThemBan,btnRequest;
+    private Button btnRequest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
-        recyclerView = view.findViewById(R.id.recyclerViewFriend);
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         contactRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(mUser.getUid());
+        recyclerView = view.findViewById(R.id.recyclerViewFriend);
         txtSearch = view.findViewById(R.id.txtSearch);
         txtSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,24 +69,13 @@ public class FriendFragment extends Fragment {
             }
         });
 
-        btnThemBan = view.findViewById(R.id.btn_addFriend);
-        btnThemBan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(),SearchFriendActivity.class));
-            }
-        });
         btnRequest = view.findViewById(R.id.btn_requestFriend);
-        btnRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(),RequestActivity.class));
-            }
-        });
+        btnRequest.setOnClickListener(v -> startActivity(new Intent(getContext(),RequestActivity.class)));
         return view;
     }
     private void LoadUser(String s) {
-        Query query = mUserRef.orderByChild("hoten").startAt(s).endAt(s+"\uf8ff");
+        Query query = contactRef;
+                //startAt(s).endAt(s+"\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<User>().setQuery(query,User.class).build();
         adapter = new FirebaseRecyclerAdapter<User, searchFriendViewHolder>(options) {
             @Override
@@ -109,7 +93,7 @@ public class FriendFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(),FriendProfile.class);
-                        intent.putExtra("keyValue",getRef(pos).getKey().toString());
+                        intent.putExtra("keyValue", getRef(pos).getKey());
                         startActivity(intent);
                     }
                 });
@@ -148,7 +132,7 @@ public class FriendFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getContext(), "Không có dữ liệu", Toast.LENGTH_SHORT).show();
+
                     }
                 });
                 holder.itemView.setOnClickListener(v -> {

@@ -1,20 +1,13 @@
 package com.example.appchat;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -30,45 +23,28 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         KhoiTao();
-        tvCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivity(intent);
-            }
+        tvCreate.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+            startActivity(intent);
         });
 
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(LoginActivity.this, "Email"+txtEmail.getText().toString(), Toast.LENGTH_SHORT).show();
-                String email = txtEmail.getText().toString();
-                String password = txtPassword.getText().toString();
-                auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Login();
-                        }else {
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            }
+        btnSignIn.setOnClickListener(view -> {
+            //Toast.makeText(LoginActivity.this, "Email"+txtEmail.getText().toString(), Toast.LENGTH_SHORT).show();
+            String email = txtEmail.getText().toString();
+            String password = txtPassword.getText().toString();
+            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Login();
+                }else {
+                    Toast.makeText(LoginActivity.this, "Email hoặc mật khẩu không đúng!", Toast.LENGTH_LONG).show();
+                }
+            });
         });
-        btnsignInWithPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,LoginPhoneActivity.class);
-                startActivity(intent);
-            }
+        btnsignInWithPhone.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this,LoginPhoneActivity.class);
+            startActivity(intent);
         });
-        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,ForgotPassword.class));
-            }
-        });
+        tvForgotPassword.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this,ForgotPassword.class)));
     }
 
     private void Login() {
@@ -83,25 +59,22 @@ public class LoginActivity extends AppCompatActivity {
             loadingBar.setMessage("Vui lòng chờ vài giây!");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
-            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        if(auth.getCurrentUser().isEmailVerified()){
-                            loadingBar.dismiss();
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        }else{
-                            loadingBar.dismiss();
-                            Toast.makeText(LoginActivity.this, "Vui lòng xác thực địa chỉ Email trước khi đăng nhập!", Toast.LENGTH_SHORT).show();
-                        }
-                    }else if(task.isCanceled()){
+            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    if(auth.getCurrentUser().isEmailVerified()){
                         loadingBar.dismiss();
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        loadingBar.dismiss();
+                        Toast.makeText(LoginActivity.this, "Vui lòng xác thực địa chỉ Email trước khi đăng nhập!", Toast.LENGTH_SHORT).show();
                     }
+                }else if(task.isCanceled()){
+                    loadingBar.dismiss();
+                    Toast.makeText(LoginActivity.this, "Email hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -124,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void checkUser(){
         FirebaseUser mUser = auth.getCurrentUser();
-        if(mUser!=null){
+        if(mUser!=null&&mUser.isEmailVerified()){
             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
